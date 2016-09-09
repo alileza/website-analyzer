@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>HTML Analyzer</title>
+    </head>
+    <body>
+        <form id="form" method="post">
+            <div class="">
+                <input id="inputurl" type="text" name="url" placeholder="please insert url" value="">
+                <button type="submit">ANALYZE</button>
+            </div>
+            <div id="error-message" style="font-size:11px; color: red;">
+                
+            </div>
+            <div id="info-message" >
+                
+            </div>
+        </form>
+        <script type="text/javascript">
+            var form = document.getElementById("form");
+            var input = document.getElementById("inputurl");
+            var result = document.getElementById("info-message");
+            var err = document.getElementById("error-message");
+            
+            form.addEventListener("submit", function(e){
+                e.preventDefault();
+                
+                var xhr = new XMLHttpRequest();
+                
+                xhr.onreadystatechange = function() {
+                    if(this.readyState == 1){
+                        result.innerHTML = "loading..."
+                    }
+                    
+                    if(this.readyState == 4){
+                        result.innerHTML = "";
+                        if(this.status != 200){
+                            err.innerHTML = JSON.parse(this.response).message;
+                        }else{
+                            result.innerHTML = JSON.parse(this.response).message;
+                        }
+                    }
+                }
+                
+                xhr.open("POST", "/", true);
+                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhr.send("url=" + input.value);
+                
+            })
+        </script>
+    </body>
+</html>
